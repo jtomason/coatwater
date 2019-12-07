@@ -1,13 +1,18 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
+import axios from 'axios'
 const temp = 'https://young-earth-90471.herokuapp.com/get/five';
 function App() {
 
   const [info, setInfo] = useState(0);
 
-  getInfo(setInfo)
+  //
+  useEffect(() => {
+    getInfo(setInfo)
+      console.log('mount it!');
+  }, []); // passing an empty array as second argument triggers the callback in useEffect only after the initial render thus replicating `componentDidMount` lifecycle behaviour
+
   
   
   return (
@@ -24,7 +29,7 @@ function App() {
           rel="noopener noreferrer"
         >
           Learn React
-          {info}
+          {JSON.stringify(info)}
         </a>
       </header>
     </div>
@@ -33,6 +38,7 @@ function App() {
 
 async function getInfo(setInfo){
   let results = await axios.get(temp)
+  console.log(results)
   setInfo(results)
 }
 
