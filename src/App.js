@@ -2,7 +2,20 @@ import React, {useState, useEffect} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios'
-const temp = 'https://young-earth-90471.herokuapp.com/get/five';
+import { withAuth } from '@okta/okta-react';
+import { Security, ImplicitCallback } from '@okta/okta-react';
+
+const config = {
+  issuer: 'https://dev-206405.okta.com/oauth2/default',
+  redirectUri: window.location.origin + '/implicit/callback',
+  clientId: '0oa25ea3sb19JYhQT357',
+  pkce: true
+}
+
+console.log(process.env.local, typeof process.env.local)
+const baseAPIURL = process.env.local ? "https://localhost:5000" : "https://young-earth-90471.herokuapp.com";
+
+const temp = baseAPIURL+'/get/five';
 
 Notification.requestPermission().then(function(result) {
   console.log(result);
@@ -36,12 +49,32 @@ function notifyMe() {
   // want to be respectful there is no need to bother them any more.
 }
 
+import React from "react";
+const routes = {
+  "/": () => <Home />,
+  "/home": () => <Home />,
+  "/login": () => <Login />
+};
+
 function App() {
+  const routeResult = withAuth(useRoutes(routes))
+  return routeResult
+}
+
+function Login() {
+  return <div>What</div>
+}
+
+function Home() {
 
   const [info, setInfo] = useState(0);
 
   //
   useEffect(() => {
+    const authenticated = await this.props.auth.isAuthenticated();
+    if (authenticated !== this.state.authenticated) {
+      this.setState({ authenticated });
+    }
     getInfo(setInfo)
     
       console.log('mount it!');
@@ -71,6 +104,7 @@ function App() {
     </div>
   );
 }
+
 
 async function getInfo(setInfo){
   let results = await axios.get(temp)
