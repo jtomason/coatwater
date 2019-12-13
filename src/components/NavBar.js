@@ -134,6 +134,15 @@ const NavBar = () => {
                   </RouterNavLink>
                 </NavItem>
                 <NavItem>
+                  <FontAwesomeIcon icon="user" className="mr-3" />
+                  <RouterNavLink
+                    to="/external-api"
+                    activeClassName="router-link-exact-active"
+                  >
+                    External API
+                  </RouterNavLink>
+                </NavItem>
+                <NavItem>
                   <FontAwesomeIcon icon="power-off" className="mr-3" />
                   <RouterNavLink
                     to="#"

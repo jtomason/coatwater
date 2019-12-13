@@ -12,14 +12,16 @@ require('dotenv').config()
 console.log('env', process.env.NODE_ENV);
 console.log(process.env);
 
-let domain, client_id;
+let domain, client_id, audience;
 if(process.env.NODE_ENV!=='local'){
   domain = process.env.REACT_APP_AUTH_DOMAIN;
   client_id = process.env.REACT_APP_AUTH_CLIENT_ID;
+  audience = process.env.REACT_APP_AUDIENCE;
 }else{
   let config = require("./auth_config.json");
   domain = config.domain;
   client_id = config.clientId;
+  audience = config.REACT_APP_AUDIENCE;
   console.log("GOT CONFIG FILE", domain, client_id)
 }
 
@@ -35,6 +37,7 @@ ReactDOM.render(
   <Auth0Provider
     domain={domain}
     client_id={client_id}
+    audience={audience}
     redirect_uri={window.location.origin}
     onRedirectCallback={onRedirectCallback}
   >
