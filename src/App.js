@@ -51,7 +51,6 @@ function notifyMe() {
   // want to be respectful there is no need to bother them any more.
 }
 
-import React from "react";
 const routes = {
   "/": () => <Home />,
   "/home": () => <Home />,
