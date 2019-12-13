@@ -6,7 +6,11 @@ import * as serviceWorker from "./serviceWorker";
 import { Auth0Provider } from "./react-auth0-spa";
 import history from "./utils/history";
 
+console.log('env', process.env.NODE_ENV);
+console.log(process.env);
 require('dotenv').config()
+console.log('env', process.env.NODE_ENV);
+console.log(process.env);
 
 let domain, client_id;
 if(process.env.NODE_ENV==="prod"){
