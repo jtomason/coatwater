@@ -6,6 +6,8 @@ import * as serviceWorker from "./serviceWorker";
 import { Auth0Provider } from "./react-auth0-spa";
 import history from "./utils/history";
 
+require('dotenv').config()
+
 let domain, client_id;
 if(process.env.NODE_ENV==="prod"){
   domain = process.env.AUTH_DOMAIN;
