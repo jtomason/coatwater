@@ -13,7 +13,7 @@ console.log('env', process.env.NODE_ENV);
 console.log(process.env);
 
 let domain, client_id;
-if(process.env.NODE_ENV==="prod"){
+if(process.env.NODE_ENV){
   domain = process.env.AUTH_DOMAIN;
   client_id = process.env.AUTH_CLIENT_ID;
 }else{
