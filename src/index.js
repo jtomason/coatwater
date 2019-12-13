@@ -4,8 +4,18 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { Auth0Provider } from "./react-auth0-spa";
-import config from "./auth_config.json";
 import history from "./utils/history";
+
+let domain, client_id;
+if(process.env.NODE_ENV==="prod"){
+  domain = process.env.AUTH_DOMAIN;
+  client_id = process.env.AUTH_CLIENT_ID;
+}else{
+  let config = require("./auth_config.json");
+  domain = config.domain;
+  client_id = config.clientId;
+  console.log("GOT CONFIG FILE", domain, client_id)
+}
 
 const onRedirectCallback = appState => {
   history.push(
@@ -17,8 +27,8 @@ const onRedirectCallback = appState => {
 
 ReactDOM.render(
   <Auth0Provider
-    domain={config.domain}
-    client_id={config.clientId}
+    domain={domain}
+    client_id={client_id}
     redirect_uri={window.location.origin}
     onRedirectCallback={onRedirectCallback}
   >
