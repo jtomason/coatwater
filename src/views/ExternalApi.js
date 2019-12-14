@@ -36,11 +36,6 @@ const ExternalApi = () => {
       
       const response = await fetch("https://young-earth-90471.herokuapp.com/event/create", {
         method: 'POST',
-        headers: {
-          
-          "X-API-Key": "c2e8f916ae8a48c7b7bfe6632670f912" ,
-          "Content-Type": "application/json"
-        },
         body: JSON.stringify({
           "path": "/notification",
           "postAt": dt.toISOString(),
