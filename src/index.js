@@ -13,7 +13,7 @@ console.log('env', process.env.NODE_ENV);
 console.log(process.env);
 
 let domain, client_id, audience;
-if(process.env.NODE_ENV!=='local'){
+if(!window.location.href.includes("local")){
   domain = process.env.REACT_APP_AUTH_DOMAIN;
   client_id = process.env.REACT_APP_AUTH_CLIENT_ID;
   audience = process.env.REACT_APP_AUDIENCE;
