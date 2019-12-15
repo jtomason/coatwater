@@ -143,9 +143,7 @@ export default [
   },
   {
     id: 21,
-    title: 'Phone Interview',
-    start: new Date(2015, 3, 14, 17, 0, 0),
-    end: new Date(2015, 3, 14, 18, 30, 0),
+    title: 'Phone Interview'
   },
   {
     id: 22,

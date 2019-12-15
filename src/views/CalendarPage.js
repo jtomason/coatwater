@@ -15,7 +15,8 @@ const CalendarPage = () => {
     try {
       const token = await getTokenSilently();
 
-      const response = await fetch("https://young-earth-90471.herokuapp.com/get/five", {
+      const response = await fetch("https://young-earth-90471.herokuapp.com/events", {
+        method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`
         }

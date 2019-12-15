@@ -24,8 +24,12 @@ const FormItem = (props) => {
 
 const FormInput = (props) => {
     if(props.type==='datetime'){
+        let value = props.value;
+        if(typeof value === 'string'){
+            value = new Date(value)
+        }
         return <div>
-            <DateTimePicker {...props}></DateTimePicker>
+            <DateTimePicker {...props} value={value}></DateTimePicker>
         </div>
     }
 

@@ -70,19 +70,21 @@
   background-color: #F5F5F5;
   border-radius: 25px;
   border: 2px solid black;
+  backface-visibility: hidden;
   box-shadow: 10px 10px 5px grey;
   -webkit-animation: fadein 1s; /* Safari, Chrome and Opera > 12.1 */
        -moz-animation: fadein 1s; /* Firefox < 16 */
         -ms-animation: fadein 1s; /* Internet Explorer */
          -o-animation: fadein 1s; /* Opera < 12.1 */
             animation: fadein 1s;
+            -webkit-font-smoothing: antialiased;
 }
 
 
 .modal-guts {
 
   /* other stuff we already covered */
-
+  transform: translateZ(0);
   /* cover the modal */
   position: absolute;
   top: 0;
@@ -130,14 +132,35 @@ button:hover {
 .my-alert {
   background: #ff6a6a;
   padding: 10px 15px;
+  margin:20px 20px 20px 20px;
   color: #ffffff !important;
 }
 .my-alert:hover{
   color: #ff4242 !important;
 }
 
+.my-warning {
+  background: #ff4242;
+  padding: 10px 15px;
+  color: #ffffff !important;
+  margin:20px 20px 20px 20px;
+}
+.my-warning:hover{
+  background-color: #ff6a6a !important;
+}
 
+.rbc-event{
+  transition: all 0.3s ease 0s;
+}
 
+.rbc-event:hover{
+  letter-spacing: 3px;
+  background: none;
+  -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+  -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+  transition: all 0.3s ease 0s;
+  
+}
 
 .form-row{
   flex-wrap: nowrap;

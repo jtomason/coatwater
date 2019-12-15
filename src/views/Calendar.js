@@ -4,6 +4,7 @@ import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar'
 import Modal from '../components/Modal';
 import moment from 'moment'
+import { useAuth0 } from "../react-auth0-spa";
 
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
@@ -20,7 +21,13 @@ const eventStyleGetter = function(event, start, end, isSelected) {
       opacity: 0.8,
       color: 'black',
       border: '0px',
-      display: 'block'
+      display: 'block',  
+      ":hover": {
+      
+        textDecoration: 'underline',
+        backgroundColor: "#ff0000",
+        color: "#ffffff"
+      }
   };
   return {
       style: style
@@ -149,13 +156,74 @@ function pushToArray(arr, obj) {
   }
   return arr;
 }
+function removeFromArray(arr, obj) {
+  return arr.filter((element)=>{
+    return element.id !== obj.id;
+  });
+}
+
+async function getEventsFromAPI(getTokenSilently, setEvents){
+  try {
+    const token = await getTokenSilently();
+
+    const response = await fetch("https://young-earth-90471.herokuapp.com/events", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const responseData = await response.json();
+    console.log(responseData)
+    let events = JSON.parse(responseData.info)[0].events.events;
+    console.log(events)
+    if(events){
+
+      setEvents(events);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function setEventsToAPI(getTokenSilently, events){
+  try {
+    const token = await getTokenSilently();
+
+    const response = await fetch("https://young-earth-90471.herokuapp.com/events", {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        events
+      })
+    });
+
+    const responseData = await response.json();
+    console.log(responseData)
+
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 let Popup = ({  }) => {
+
+  const { getTokenSilently } = useAuth0();
   
+
   const [template, setTemplate] = useState(null);
     const [templates, setTemplates] = useState([]);
     const [events, setEvents] = useState(initialEvents);
     const [formItem, setFormItem] = useState(null);
+
+    
+  useEffect(() => {
+      getEventsFromAPI(getTokenSilently, setEvents);
+  }, []); // passing an empty array as second argument triggers the callback in useEffect only after the initial render thus replicating `componentDidMount` lifecycle behaviour
+
   
     const handleSelect = ({ start, end }) => {
       
@@ -193,13 +261,17 @@ let Popup = ({  }) => {
             <button className="my-alert" onClick={()=>{setFormItem(null)}}>
               Close
             </button>
-            <button className="my-primary" onClick={()=>{
-              
-              
-
-              setEvents( pushToArray(events, formItem))
+            <button className="my-warning" onClick={()=>{
+              setEvents( removeFromArray(events, formItem))
               setFormItem(null)
-
+            }
+            }>Delete</button>
+            <button className="my-primary" onClick={()=>{
+              const newEvents = pushToArray(events, formItem);
+              setEvents(newEvents )
+              setFormItem(null)
+              setEventsToAPI(getTokenSilently, newEvents)
+              
             }
             }>Submit</button>
         </Modal>
