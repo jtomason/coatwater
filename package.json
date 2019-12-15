@@ -15,15 +15,24 @@
     "@fortawesome/react-fontawesome": "^0.1.4",
     "dotenv": "^8.2.0",
     "express": "^4.16.4",
+    "globalize": "^1.4.2",
     "highlight.js": "^9.15.6",
+    "moment": "^2.24.0",
     "morgan": "^1.9.1",
+    "node-sass": "^4.13.0",
     "react": "^16.8.6",
+    "react-big-calendar": "^0.23.0",
+    "react-color": "^2.17.3",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.0",
     "react-scripts": "3.0.1",
+    "react-widgets": "^4.4.11",
+    "react-widgets-moment": "^4.0.27",
     "reactstrap": "^8.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "globalize-webpack-plugin": "^3.0.0"
+  },
   "eslintConfig": {
     "extends": "react-app"
   },

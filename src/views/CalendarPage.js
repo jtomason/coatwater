@@ -2,8 +2,10 @@
 
 import React, { useState } from "react";
 import { useAuth0 } from "../react-auth0-spa";
+import Calender from './Calendar.js'
 
-const ExternalApi = () => {
+
+const CalendarPage = () => {
   const [showResult, setShowResult] = useState(false);
   const [apiMessage, setApiMessage] = useState("");
   const [eventMessage, setEventMessage] = useState("");
@@ -61,8 +63,10 @@ const ExternalApi = () => {
       <br/>
       <button onClick={callEvent}>Ping Event</button>
       <code>{JSON.stringify(eventMessage, null, 2)}</code>
+      <br/>
+      <Calender></Calender>
     </>
   );
 };
 
-export default ExternalApi;
+export default CalendarPage;
