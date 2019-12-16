@@ -58,13 +58,6 @@ const CalendarPage = () => {
 
   return (
     <>
-      <h1>External API</h1>
-      <button onClick={callApi}>Ping API</button>
-      {showResult && <code>{JSON.stringify(apiMessage, null, 2)}</code>}
-      <br/>
-      <button onClick={callEvent}>Ping Event</button>
-      <code>{JSON.stringify(eventMessage, null, 2)}</code>
-      <br/>
       <Calender></Calender>
     </>
   );

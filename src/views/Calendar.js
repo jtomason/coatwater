@@ -10,7 +10,10 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.scss'
 import FormGenerator from '../components/FormGenerator';
-
+Date.prototype.addHours = function(h) {
+  this.setTime(this.getTime() + (h*60*60*1000));
+  return this;
+}
 const localizer = momentLocalizer(moment)
 
 const eventStyleGetter = function(event, start, end, isSelected) {
@@ -108,13 +111,13 @@ const templateLayout ={
       columns: [
         {
           fields: [
-            {title:'Start', accessor:'start', type:'time'}
+            {title:'Start Time', accessor:'start', type:'time'}
           ]
         },
         
         {
           fields: [
-            {title:'Hours', accessor:'hours', type:'number'}
+            {title:'Number of hours', accessor:'hours', type:'number'}
           ]
         }
       ]
@@ -123,13 +126,13 @@ const templateLayout ={
       columns: [
         { 
           fields:[
-            {title:'Title', accessor:'title', type:'text'},
+            {title:'Default Title', accessor:'title', type:'text'},
             {title:'Notification Time', accessor:'notificationDateTime', type:'time'}
           ]
         },
         {
           fields:[
-            {title:'Color', accessor:'color', type:'color'}
+            {title:'Default Color', accessor:'color', type:'color'}
           ]
         }
       ]
@@ -162,7 +165,7 @@ function removeFromArray(arr, obj) {
   });
 }
 
-async function getEventsFromAPI(getTokenSilently, setEvents){
+async function getEventsFromAPI(getTokenSilently, setEvents, setTemplates){
   try {
     const token = await getTokenSilently();
 
@@ -175,18 +178,24 @@ async function getEventsFromAPI(getTokenSilently, setEvents){
 
     const responseData = await response.json();
     console.log(responseData)
-    let events = JSON.parse(responseData.info)[0].events.events;
+    let responseInfo = JSON.parse(responseData.info)[0].events;
+    let events = responseInfo.events;
+    let templates = responseInfo.templates;
     console.log(events)
     if(events){
 
       setEvents(events);
+    }
+    if(templates){
+
+      setTemplates(templates);
     }
   } catch (error) {
     console.error(error);
   }
 }
 
-async function setEventsToAPI(getTokenSilently, events){
+async function setEventsToAPI(getTokenSilently, events, templates){
   try {
     const token = await getTokenSilently();
 
@@ -197,7 +206,8 @@ async function setEventsToAPI(getTokenSilently, events){
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        events
+        events,
+        templates
       })
     });
 
@@ -221,14 +231,49 @@ let Popup = ({  }) => {
 
     
   useEffect(() => {
-      getEventsFromAPI(getTokenSilently, setEvents);
+      getEventsFromAPI(getTokenSilently, setEvents, setTemplates);
   }, []); // passing an empty array as second argument triggers the callback in useEffect only after the initial render thus replicating `componentDidMount` lifecycle behaviour
 
   
     const handleSelect = ({ start, end }) => {
       
-      setFormItem({start, end, notificationDateTime:start})
+      setFormItem({id:uuidv4(),start, end, notificationDateTime:start})
         
+    }
+
+    const applyTemplate = (template) => {
+      
+      console.log(template, formItem)
+
+      let start = new Date(formItem.start);
+      let noti = new Date(formItem.start)
+      let startTiming = template.start.split(':');
+      let startHours=startTiming[0], startMinutes=startTiming[1];
+      // Set hours
+      start.setHours(startHours);
+      start.setMinutes(startMinutes);
+
+      let end = new Date(start);
+      end.addHours(parseInt(template.hours))
+
+      let notiTiming = template.notificationDateTime.split(':');
+      let notiHours=notiTiming[0], notiMinutes=notiTiming[1];
+      // Set hours
+      noti.setHours(notiHours);
+      noti.setMinutes(notiMinutes);
+
+      let newFormItem = {
+        ...formItem,
+        start:start.toISOString(),
+        notificationDateTime: noti.toISOString(),
+        end:end.toISOString(),
+        title:template.title,
+        color:template.color,
+
+      };
+
+      console.log(newFormItem)
+      setFormItem(newFormItem)
     }
     
     return <React.Fragment>
@@ -239,14 +284,16 @@ let Popup = ({  }) => {
           events={events}
           localizer={localizer}
           defaultDate={new Date(2015, 3, 1)}
-          onSelectEvent={event => {setFormItem(event)}}
+          onSelectEvent={event => { setFormItem({id:uuidv4(),...event})}}
           onSelectSlot={handleSelect}
           eventPropGetter={(eventStyleGetter)}
         />
         <Modal show={formItem!==null}
           header='Event'
           onClose={()=>{setFormItem(null)}}>
-            <div>From Template: <button>Meritus Night</button> <button>Meritus Day</button> <button>War Memorial Day</button></div>
+           From Template: {templates.map((template)=>{
+              return <button onClick={()=>{applyTemplate(template)}}>{template.title}</button>
+            })}
             <FormGenerator 
             layout={layout}
             item={formItem} 
@@ -270,7 +317,7 @@ let Popup = ({  }) => {
               const newEvents = pushToArray(events, formItem);
               setEvents(newEvents )
               setFormItem(null)
-              setEventsToAPI(getTokenSilently, newEvents)
+              setEventsToAPI(getTokenSilently, newEvents, templates)
               
             }
             }>Submit</button>
